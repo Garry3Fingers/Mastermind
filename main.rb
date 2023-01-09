@@ -1,3 +1,8 @@
+# frozen_string_literal: true
+
+require 'colorize'
+
+# It's a test class
 class GameBoard
   attr_reader :colors
 
