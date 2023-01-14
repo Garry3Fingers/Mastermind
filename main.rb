@@ -69,6 +69,13 @@ class GameBoard
     true
   end
 
+  def show_guess_feedback(code, guess_code)
+    guess_arr = guess_feedback(code, guess_code)
+    puts "Black is the correct color in both color and position. White is the correct color
+placed in the wrong position. Red is the wrong color."
+    puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}"
+  end
+
   public
 
   def game_loop
@@ -79,7 +86,7 @@ class GameBoard
       guess_code = player_make_guess
       break if compare_arr(code, guess_code)
 
-      puts guess_feedback(code, guess_code)
+      show_guess_feedback(code, guess_code)
       i -= 1
     end
     puts 'Game over!'
