@@ -27,7 +27,7 @@ class GameBoard
   end
 
   def player_make_guess
-    puts "Choose four colors from the 'Red, Blue, Green, Yellow, Orange, Purple' list."
+    puts "\nChoose four colors from the 'Red, Blue, Green, Yellow, Orange, Purple' list."
     puts "Press 'Enter' after each selection."
     player_guess = []
     4.times do
@@ -71,12 +71,21 @@ class GameBoard
 
   def show_guess_feedback(code, guess_code)
     guess_arr = guess_feedback(code, guess_code)
-    puts "Black is the correct color in both color and position. White is the correct color
-placed in the wrong position. Red is the wrong color."
-    puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}"
+    puts "\nBlack is the correct color in both color and position. White is the correct color
+placed in the wrong position. Red is the wrong color.
+\n"
+    puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}
+    \n"
   end
 
   public
+
+  def show_start_message
+    "Mastermind is a code-breaking game for two players. One player becomes the codemaker, the other the codebreaker.
+The codemaker chooses a pattern of four colors. The codebreaker tries to guess the pattern, in both order and color,
+within eight turns.
+\n"
+  end
 
   def game_loop
     code = computer_make_code
@@ -98,4 +107,6 @@ class InvalidInput < StandardError; end
 game_board = GameBoard.new
 
 # p String.colors
+puts game_board.show_start_message
+
 game_board.game_loop
