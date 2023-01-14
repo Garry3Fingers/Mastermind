@@ -80,7 +80,7 @@ placed in the wrong position. Red is the wrong color."
 
   def game_loop
     code = computer_make_code
-    i = 12
+    i = 8
     while i.positive?
       puts "You left #{i} attempts to break the code!"
       guess_code = player_make_guess
@@ -89,7 +89,7 @@ placed in the wrong position. Red is the wrong color."
       show_guess_feedback(code, guess_code)
       i -= 1
     end
-    puts 'Game over!'
+    puts 'Game over! You have no attempts left!' if i.zero?
   end
 end
 
