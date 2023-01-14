@@ -44,19 +44,29 @@ class GameBoard
   end
 
   def guess_feedback(code, guess_code)
-    check = false
     code.each_with_index.map do |_, i|
-      if code[i] == guess_code[i]
-        'O'.colorize(:red)
-      elsif guess_code.count(guess_code[i]) == 1 && code.include?(guess_code[i])
-        'O'.colorize(:light_white)
-      elsif guess_code.count(guess_code[i]) > 1 && check == false && code.include?(guess_code[i])
-        check = true
+      if black_test(code[i], guess_code[i])
+        'O'.colorize(:black)
+      elsif white_test(code, guess_code, guess_code[i], i)
         'O'.colorize(:light_white)
       else
-        'O'.colorize(:black)
+        'O'.colorize(:red)
       end
     end
+  end
+
+  def white_test(code, guess_code, position, index)
+    if guess_code.count(position) == 1 && code.include?(position)
+      true
+    elsif guess_code.count(position) > 1 && code.include?(position) && guess_code.index(position) == guess_code[index]
+      true
+    end
+  end
+
+  def black_test(code, guess_code)
+    return unless code == guess_code
+
+    true
   end
 
   public
