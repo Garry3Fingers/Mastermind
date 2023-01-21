@@ -5,11 +5,9 @@ require 'colorize'
 # It's a test class
 class GameBoard
   attr_reader :colors
-  attr_accessor :set_of_s
 
   def initialize
     @colors = %w[red blue green yellow orange purple]
-    @set_of_s = []
   end
 
   private
@@ -22,10 +20,6 @@ class GameBoard
     retry
   else
     input.downcase
-  end
-
-  def computer_make_code
-    @colors.sample(4)
   end
 
   def player_make_guess
@@ -84,15 +78,18 @@ placed in the wrong position. Red is the wrong color.
     puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}
     \n"
   end
+end
+
+class InvalidInput < StandardError; end
+
+class PlaylerCodebreaker < GameBoard
+  private
+
+  def computer_make_code
+    @colors.sample(4)
+  end
 
   public
-
-  def show_start_message
-    "Mastermind is a code-breaking game for two players. One player becomes the codemaker, the other the codebreaker.
-The codemaker chooses a pattern of four colors. The codebreaker tries to guess the pattern, in both order and color,
-within eight turns.
-\n"
-  end
 
   def game_loop
     code = computer_make_code
@@ -106,6 +103,27 @@ within eight turns.
       i -= 1
     end
     puts 'Game over! You have no attempts left!' if i.zero?
+  end
+end
+
+class PlayerCodemaker < GameBoard
+  attr_accessor :set_of_s
+
+  def initialize
+    super
+    @set_of_s = []
+  end
+
+  private
+
+  def combinations
+    @colors.repeated_permutation(4) { |permutation| @set_of_s << permutation }
+    @set_of_s
+  end
+
+  def computer_first_guess(combination_arr)
+    index = combination_arr.index { |arr| arr == %w[red red blue blue] }
+    combination_arr[index]
   end
 
   def process_feedback(feedback, guess_code)
@@ -125,8 +143,10 @@ within eight turns.
     @set_of_s.sample
   end
 
+  public
+
   def computer_loop
-    code = computer_make_code
+    code = player_make_guess
     i = 8
     while i.positive?
       puts "You left #{i} attempts to break the code!"
@@ -145,22 +165,39 @@ within eight turns.
     end
     puts 'Game over! You have no attempts left!' if i.zero?
   end
+end
 
-  def combinations
-    @colors.repeated_permutation(4) { |permutation| @set_of_s << permutation }
-    @set_of_s
+class StartGame
+  def initialize
+    puts show_start_message
+    puts 'Choose you role! Enter 1 for codebreaker and 2 for codemaker.'
+    input = player_input
+
+    if input == 1
+      PlaylerCodebreaker.new.game_loop
+    else
+      PlayerCodemaker.new.computer_loop
+    end
   end
 
-  def computer_first_guess(combination_arr)
-    index = combination_arr.index { |arr| arr == %w[red red blue blue] }
-    combination_arr[index]
+  private
+
+  def player_input
+    input = gets.chomp
+    raise InvalidInput, 'Invalid number. Please enter 1 or 2' unless input.to_i == 1 || input.to_i == 2
+  rescue InvalidInput => e
+    puts e
+    retry
+  else
+    input.to_i
+  end
+
+  def show_start_message
+    "Mastermind is a code-breaking game for two players. One player becomes the codemaker, the other the codebreaker.
+The codemaker chooses a pattern of four colors. The codebreaker tries to guess the pattern, in both order and color,
+within eight turns.
+\n"
   end
 end
 
-class InvalidInput < StandardError; end
-
-game_board = GameBoard.new
-
-# p String.colors
-
-game_board.computer_loop
+StartGame.new
