@@ -64,9 +64,6 @@ class GameBoard
   end
 
   def black_test(code, guess_code)
-    # return unless code == guess_code
-
-    # true
     code == guess_code
   end
 
@@ -126,21 +123,34 @@ class PlayerCodemaker < GameBoard
     combination_arr[index]
   end
 
-  def process_feedback(feedback, guess_code)
-    feedback.each_with_index do |number, index|
-      @set_of_s.reject! do |arr|
-        case number
-        when 1
-          arr[index] != guess_code[index]
-        when 2
-          arr.include?(guess_code[index]) == false || arr.count(guess_code[index]) > 1
-        when 3
-          arr.count(guess_code[index]) > 1
-        end
-      end
-    end
+  # def process_feedback(feedback, guess_code)
+  #   feedback.each_with_index do |number, index|
+  #     @set_of_s.reject! do |arr|
+  #       case number
+  #       when 1
+  #         arr[index] != guess_code[index]
+  #       when 2
+  #         arr.include?(guess_code[index]) == false || arr.count(guess_code[index]) > 1
+  #       when 3
+  #         arr.count(guess_code[index]) > 1
+  #       end
+  #     end
+  #   end
 
-    @set_of_s.sample
+  #   p @set_of_s
+  #  p @set_of_s.sample
+  # end
+
+  def process_feedback(feedback, guess)
+    @set_of_s.reject! do |arr|
+      # arr unless guess_feedback(guess, arr).find_all { |elem| elem == 1 } == feedback.find_all { |elem| elem == 1 } &&
+      #            guess_feedback(guess, arr).find_all { |elem| elem == 2 } == feedback.find_all { |elem| elem == 2 }
+      arr unless reduce(feedback, guess, arr, 1) && reduce(feedback, guess, arr, 2)
+    end.sample
+  end
+
+  def reduce(feedback, guess, arr, number)
+    guess_feedback(guess, arr).find_all { |elem| elem == number } == feedback.find_all { |elem| elem == number }
   end
 
   public
