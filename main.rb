@@ -92,9 +92,10 @@ class PlaylerCodebreaker < GameBoard
     code = computer_make_code
     i = 8
     while i.positive?
-      puts "You left #{i} attempts to break the code!"
       guess_code = player_make_guess
       break if compare_arr(code, guess_code)
+
+      puts "You left #{i} attempts to break the code!"
 
       show_guess_feedback(code, guess_code)
       i -= 1
@@ -130,7 +131,7 @@ class PlayerCodemaker < GameBoard
   end
 
   def reduce(feedback, guess, arr, number)
-    guess_feedback(guess, arr).find_all { |elem| elem == number } == feedback.find_all { |elem| elem == number }
+    guess_feedback(arr, guess).count { |elem| elem == number } == feedback.count { |elem| elem == number }
   end
 
   def choose_code(iteration, code, guess_code)
