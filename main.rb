@@ -42,13 +42,10 @@ class GameBoard
   def guess_feedback(code, guess_code)
     code.each_with_index.map do |_, i|
       if black_test(code[i], guess_code[i])
-        # 'O'.colorize(:black)
         1
       elsif white_test(code, guess_code, guess_code[i], i)
-        # 'O'.colorize(:light_white)
         2
       else
-        # 'O'.colorize(:red)
         3
       end
     end
@@ -67,8 +64,22 @@ class GameBoard
     code == guess_code
   end
 
+  def colorize_feedback(code, guess_code)
+    guess_feedback(code, guess_code).sort.map do |number|
+      case number
+      when 1
+        'O'.colorize(:black)
+      when 2
+        'O'.colorize(:light_white)
+      when 3
+        'O'.colorize(:red)
+      end
+    end
+  end
+
   def show_guess_feedback(code, guess_code)
-    guess_arr = guess_feedback(code, guess_code)
+    guess_arr = colorize_feedback(code, guess_code)
+
     puts "\nBlack is the correct color in both color and position. White is the correct color
 placed in the wrong position. Red is the wrong color.
 \n"
@@ -88,7 +99,7 @@ class PlaylerCodebreaker < GameBoard
 
   public
 
-  def game_loop
+  def player_loop
     code = computer_make_code
     i = 8
     while i.positive?
@@ -154,7 +165,7 @@ class PlayerCodemaker < GameBoard
 
       break if compare_arr(code, guess_code)
 
-      p guess_feedback(code, guess_code)
+      show_guess_feedback(code, guess_code)
 
       i -= 1
     end
@@ -169,7 +180,7 @@ class StartGame
     input = player_input
 
     if input == 1
-      PlaylerCodebreaker.new.game_loop
+      PlaylerCodebreaker.new.player_loop
     else
       PlayerCodemaker.new.computer_loop
     end
