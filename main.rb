@@ -35,7 +35,7 @@ class GameBoard
   def compare_arr(code, guess_code)
     return unless guess_code == code
 
-    puts 'The codebreaker has broke the code!'
+    puts "\nThe codebreaker has broke the code!"
     true
   end
 
@@ -82,8 +82,7 @@ class GameBoard
 
     puts "\nBlack is the correct color in both color and position. White is the correct color
 placed in the wrong position. Red is the wrong color.\n\n"
-    puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}
-    \n"
+    puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}\n\n"
   end
 end
 
@@ -102,15 +101,19 @@ class PlayerCodebreaker < GameBoard
   def player_loop
     code = computer_make_code
     i = 8
+
     while i.positive?
       guess_code = player_make_guess
+
       break if compare_arr(code, guess_code)
 
       puts "The player has #{i} attempts to break the code!"
 
       show_guess_feedback(code, guess_code)
+
       i -= 1
     end
+
     puts 'The player didn\'t break the code. Computer wins!' if i.zero?
   end
 end
@@ -154,15 +157,15 @@ class PlayerCodemaker < GameBoard
     end
   end
 
-  public
-
-  def computer_loop
-    code = player_make_guess
+  def while_loop(code)
     i = 8
+
     while i.positive?
-      puts "The computer has #{i} attempts to break the code!"
+      puts "The computer has #{i} attempts to break the code!\n\n"
 
       guess_code = choose_code(i, code, guess_code)
+
+      puts "Guess: #{guess_code[0]} #{guess_code[1]} #{guess_code[2]} #{guess_code[3]}\n\n"
 
       break if compare_arr(code, guess_code)
 
@@ -170,7 +173,16 @@ class PlayerCodemaker < GameBoard
 
       i -= 1
     end
+
     puts 'The computer didn\'t break the code. Player wins!' if i.zero?
+  end
+
+  public
+
+  def computer_loop
+    code = player_make_guess
+
+    while_loop(code)
   end
 end
 
