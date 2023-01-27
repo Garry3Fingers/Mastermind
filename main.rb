@@ -2,7 +2,7 @@
 
 require 'colorize'
 
-# It's a test class
+# Base class for the game
 class GameBoard
   attr_reader :colors
 
@@ -35,7 +35,7 @@ class GameBoard
   def compare_arr(code, guess_code)
     return unless guess_code == code
 
-    puts 'Gongratulations! You broke the code!'
+    puts 'The codebreaker has broke the code!'
     true
   end
 
@@ -81,8 +81,7 @@ class GameBoard
     guess_arr = colorize_feedback(code, guess_code)
 
     puts "\nBlack is the correct color in both color and position. White is the correct color
-placed in the wrong position. Red is the wrong color.
-\n"
+placed in the wrong position. Red is the wrong color.\n\n"
     puts "#{guess_arr[0]} #{guess_arr[1]} #{guess_arr[2]} #{guess_arr[3]}
     \n"
   end
@@ -90,7 +89,8 @@ end
 
 class InvalidInput < StandardError; end
 
-class PlaylerCodebreaker < GameBoard
+# This class contains methods for the codebreaker player role.
+class PlayerCodebreaker < GameBoard
   private
 
   def computer_make_code
@@ -106,15 +106,16 @@ class PlaylerCodebreaker < GameBoard
       guess_code = player_make_guess
       break if compare_arr(code, guess_code)
 
-      puts "You left #{i} attempts to break the code!"
+      puts "The player has #{i} attempts to break the code!"
 
       show_guess_feedback(code, guess_code)
       i -= 1
     end
-    puts 'Game over! You have no attempts left!' if i.zero?
+    puts 'The player didn\'t break the code. Computer wins!' if i.zero?
   end
 end
 
+# This class contains methods for the codemaker player role.
 class PlayerCodemaker < GameBoard
   attr_accessor :set_of_s
 
@@ -159,7 +160,7 @@ class PlayerCodemaker < GameBoard
     code = player_make_guess
     i = 8
     while i.positive?
-      puts "You left #{i} attempts to break the code!"
+      puts "The computer has #{i} attempts to break the code!"
 
       guess_code = choose_code(i, code, guess_code)
 
@@ -169,10 +170,11 @@ class PlayerCodemaker < GameBoard
 
       i -= 1
     end
-    puts 'Game over! You have no attempts left!' if i.zero?
+    puts 'The computer didn\'t break the code. Player wins!' if i.zero?
   end
 end
 
+# Class for game mode selection
 class StartGame
   def initialize
     puts show_start_message
@@ -180,7 +182,7 @@ class StartGame
     input = player_input
 
     if input == 1
-      PlaylerCodebreaker.new.player_loop
+      PlayerCodebreaker.new.player_loop
     else
       PlayerCodemaker.new.computer_loop
     end
@@ -201,8 +203,7 @@ class StartGame
   def show_start_message
     "Mastermind is a code-breaking game for two players. One player becomes the codemaker, the other the codebreaker.
 The codemaker chooses a pattern of four colors. The codebreaker tries to guess the pattern, in both order and color,
-within eight turns.
-\n"
+within eight turns.\n\n"
   end
 end
 
