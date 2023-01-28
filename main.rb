@@ -2,9 +2,25 @@
 
 require 'colorize'
 
+# This module is used to start a new game
+module PlayNewGame
+  def new_game
+    puts "\nDo you want to play again? Enter yes or whatever"
+    input = gets.chomp
+
+    if input.downcase == 'yes'
+      StartGame.new
+    else
+      puts "\nThanks for playing!"
+    end
+  end
+end
+
 # Base class for the game
 class GameBoard
   attr_reader :colors
+
+  include PlayNewGame
 
   def initialize
     @colors = %w[red blue green yellow orange purple]
@@ -96,10 +112,7 @@ class PlayerCodebreaker < GameBoard
     @colors.sample(4)
   end
 
-  public
-
-  def player_loop
-    code = computer_make_code
+  def while_loop(code)
     i = 8
 
     while i.positive?
@@ -107,7 +120,7 @@ class PlayerCodebreaker < GameBoard
 
       break if compare_arr(code, guess_code)
 
-      puts "The player has #{i} attempts to break the code!"
+      puts "\nThe player has #{i} attempts to break the code!"
 
       show_guess_feedback(code, guess_code)
 
@@ -115,6 +128,16 @@ class PlayerCodebreaker < GameBoard
     end
 
     puts 'The player didn\'t break the code. Computer wins!' if i.zero?
+  end
+
+  public
+
+  def player_loop
+    code = computer_make_code
+
+    while_loop(code)
+
+    new_game
   end
 end
 
@@ -183,6 +206,8 @@ class PlayerCodemaker < GameBoard
     code = player_make_guess
 
     while_loop(code)
+
+    new_game
   end
 end
 
