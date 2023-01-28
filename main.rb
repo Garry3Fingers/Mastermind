@@ -5,7 +5,7 @@ require 'colorize'
 # This module is used to start a new game
 module PlayNewGame
   def new_game
-    puts "\nDo you want to play again? Enter yes or whatever"
+    puts "\nDo you want to play again? Enter 'yes' or whatever"
     input = gets.chomp
 
     if input.downcase == 'yes'
@@ -128,6 +128,7 @@ class PlayerCodebreaker < GameBoard
     end
 
     puts 'The player didn\'t break the code. Computer wins!' if i.zero?
+    puts "\nThe code was: #{code[0]} #{code[1]} #{code[2]} #{code[3]}" if i.zero?
   end
 
   public
