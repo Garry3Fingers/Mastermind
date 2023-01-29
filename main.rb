@@ -59,7 +59,7 @@ class GameBoard
     code.each_with_index.map do |_, i|
       if black_test(code[i], guess_code[i])
         1
-      elsif white_test(code, guess_code, guess_code[i], i)
+      elsif white_test(code, guess_code, guess_code[i])
         2
       else
         3
@@ -67,13 +67,28 @@ class GameBoard
     end
   end
 
-  def white_test(code, guess_code, position, index)
+  def white_test(code, guess_code, position)
     if guess_code.count(position) == 1 && code.include?(position)
       true
-    elsif guess_code.count(position) > 1 && code.include?(position) && guess_code.index(position) == index\
-      &&  black_test(code[guess_code.rindex(position)], guess_code[guess_code.rindex(position)]) == false
+    elsif white_additional_test(code, guess_code, position)
+      true
+    elsif white_additional_test2(code, guess_code, position)
       true
     end
+  end
+
+  def white_additional_test(code, guess_code, position)
+    return unless guess_code.count(position) > 1 && code.include?(position)\
+       && guess_code.index(position) == guess_code.find_all.first
+
+    true
+  end
+
+  def white_additional_test2(code, guess_code, position)
+    return unless guess_code.count(position) > 1 && code.include?(position)\
+       && guess_code.count(position) == code.count(position)
+
+    true
   end
 
   def black_test(code, guess_code)
