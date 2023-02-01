@@ -56,10 +56,10 @@ class GameBoard
   end
 
   def guess_feedback(code, guess_code)
-    code.each_with_index.map do |_, i|
-      if black_test(code[i], guess_code[i])
+    code.each_with_index.map do |_, index|
+      if black_test(code[index], guess_code[index])
         1
-      elsif white_test(code, guess_code, guess_code[i])
+      elsif white_test(code, guess_code, guess_code[index], index)
         2
       else
         3
@@ -67,28 +67,39 @@ class GameBoard
     end
   end
 
-  def white_test(code, guess_code, position)
+  def white_test(code, guess_code, position, index)
     if guess_code.count(position) == 1 && code.include?(position)
       true
     elsif white_additional_test(code, guess_code, position)
       true
-    elsif white_additional_test2(code, guess_code, position)
+    elsif white_additional_test2(code, guess_code, position, index)
       true
     end
   end
 
   def white_additional_test(code, guess_code, position)
     return unless guess_code.count(position) > 1 && code.include?(position)\
-       && guess_code.index(position) == guess_code.find_all.first
+       && guess_code.count(position) == code.count(position)
 
     true
   end
 
-  def white_additional_test2(code, guess_code, position)
-    return unless guess_code.count(position) > 1 && code.include?(position)\
-       && guess_code.count(position) == code.count(position)
+  def white_additional_test2(code, guess_code, position, index)
+    return unless guess_code.count(position) > 1 && code.count(position) > 1\
+       && guess_code.count(position) > code.count(position)\
+       && check(code, guess_code, position) != code.count(position) && index != guess_code.rindex(position)
 
     true
+  end
+
+  # This is an additional check for a black peg
+  def check(code, guess_code, position)
+    check = code.each_with_index.map do |_, i|
+      next if guess_code[i] != position
+
+      1 if black_test(code[i], guess_code[i])
+    end
+    check.count(1)
   end
 
   def black_test(code, guess_code)
